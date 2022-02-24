@@ -12,7 +12,6 @@ import { AssetResolver } from './resolvers/asset';
 
 const main = async () => {
   const orm = await MikroORM.init<PostgreSqlDriver>(mikroConfig);
-  // await orm.getMigrator().up();
 
   const app = express();
   const httpServer = http.createServer(app);
@@ -20,7 +19,6 @@ const main = async () => {
   const server = new ApolloServer({
     schema: await buildSchema({
       resolvers: [AssetResolver],
-      validate: false,
     }),
     context: ({ req, res }): MyContext => ({ em: orm.em.fork(), req, res }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],

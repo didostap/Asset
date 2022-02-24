@@ -20,13 +20,19 @@ export class Asset {
   @Property()
   currency!: string;
 
-  @Field(() => Number, { description: 'The percent of the asset' })
-  @Property()
-  percent!: number;
+  @Field(() => Number, {
+    description: 'The percent of the asset',
+    nullable: true,
+  })
+  @Property({ nullable: true })
+  percent?: number;
 
-  @Field(() => Number, { description: 'The increase interval of the asset' })
-  @Property()
-  increaseInterval!: number;
+  @Field(() => Number, {
+    description: 'The increase interval of the asset',
+    nullable: true,
+  })
+  @Property({ nullable: true })
+  increaseInterval?: number;
 
   @Field(() => String, { description: 'The asset created date' })
   @Property({ type: 'date' })
