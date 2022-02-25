@@ -9,7 +9,7 @@ import {
   tableCellClasses,
 } from '@mui/material';
 import { styled } from '@mui/system';
-import { useAssetsQuery } from '../generated/graphql';
+import { useAssetsQuery } from '../../generated/graphql';
 
 const loadData = Array.from({ length: 10 }, (_, i) => ({
   id: `${i}`,

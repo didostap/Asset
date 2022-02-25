@@ -8,6 +8,8 @@ const mikroConfig: Options<PostgreSqlDriver> = {
   entities: [Asset],
   dbName: 'asset',
   type: 'postgresql',
+  user: 'mac',
+  password: '1',
   debug: !__prod__,
   migrations: {
     glob: '^[w-]+d+.[tj]s$',
