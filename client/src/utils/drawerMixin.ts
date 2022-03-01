@@ -3,7 +3,7 @@ import { Theme, CSSObject } from '@mui/material';
 type DrawerMixin = (args: {
   open: boolean;
   openWidth: string;
-  closedWidth: string;
+  closeWidth: string;
   theme: Theme;
 }) => CSSObject;
 
@@ -20,9 +20,9 @@ export const drawerMixin: DrawerMixin = ({
   open,
   theme,
   openWidth,
-  closedWidth,
+  closeWidth,
 }) => {
-  const width = open ? openWidth : closedWidth;
+  const width = open ? openWidth : closeWidth;
   return {
     ...toggleMixin(width, theme),
     '& .MuiDrawer-paper': toggleMixin(width, theme),

@@ -11,7 +11,7 @@ import {
   Resolver,
 } from 'type-graphql';
 import { IsIn, IsOptional, IsPositive, Length } from 'class-validator';
-import { CURRENCIES } from '../constants';
+import { CURRENCIES, INCREASES } from '../constants';
 import { UserInputError } from 'apollo-server-express';
 
 @InputType()
@@ -33,9 +33,15 @@ class AssetInput {
   @IsPositive()
   percent?: number;
 
+  @Field({ description: 'Type of asset increase interval', nullable: true })
+  @IsOptional()
+  @IsIn(INCREASES)
+  increase?: string;
+
   @Field({ description: 'Asset increase interval', nullable: true })
   @IsOptional()
-  increaseInterval?: number;
+  @IsPositive()
+  interval?: number;
 }
 
 @Resolver()
@@ -59,14 +65,19 @@ export class AssetResolver {
     @Ctx() { em }: MyContext
   ): Promise<Asset | void> {
     if (
-      (input.increaseInterval && !input.percent) ||
-      (!input.increaseInterval && input.percent)
+      (input.increase && !input.interval && !input.percent) ||
+      (!input.increase && input.interval && !input.percent) ||
+      (!input.increase && !input.interval && input.percent)
     )
       throw new UserInputError(
         'Percent and increaseInterval should be specified together',
         {
           argumentName: `${
-            input.increaseInterval ? 'percent' : 'increaseInterval'
+            input.increase && input.interval
+              ? 'percent'
+              : input.increase && input.percent
+              ? 'interval'
+              : 'increase'
           }`,
         }
       );

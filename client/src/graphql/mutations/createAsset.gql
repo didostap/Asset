@@ -1,0 +1,5 @@
+mutation CreateAsset($input: AssetInput!) {
+  createAsset(input: $input) {
+    ...RegularAsset
+  }
+}

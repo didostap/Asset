@@ -22,12 +22,11 @@ import { menuItems } from './constants';
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
-  flexShrink: 0,
   whiteSpace: 'nowrap',
   ...drawerMixin({
     open: open!,
     openWidth: '13rem',
-    closedWidth: '4rem',
+    closeWidth: '4rem',
     theme: theme as Theme,
   }),
 }));

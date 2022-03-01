@@ -1,12 +1,5 @@
 query Assets {
   assets {
-    id
-    name
-    amount
-    currency
-    percent
-    increaseInterval
-    createdAt
-    updatedAt
+    ...RegularAsset
   }
 }

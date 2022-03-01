@@ -1,0 +1,11 @@
+fragment RegularAsset on Asset {
+  id
+  name
+  amount
+  currency
+  percent
+  increase
+  interval
+  createdAt
+  updatedAt
+}

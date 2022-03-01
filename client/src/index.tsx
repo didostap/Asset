@@ -7,7 +7,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
-const theme = createTheme({});
+const theme = createTheme({
+  palette: {
+    background: {
+      default: 'rgba(228, 228, 228, 0.3)',
+    },
+  },
+});
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000',

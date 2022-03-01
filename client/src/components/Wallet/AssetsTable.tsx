@@ -21,7 +21,7 @@ const loadData = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 const StyledTableCell = styled(TableCell)({
-  borderColor: 'white',
+  borderColor: 'transparent',
   [`&.${tableCellClasses.head}`]: {
     fontSize: 10,
     color: '#808191',
@@ -54,8 +54,6 @@ const StyledTableRow = styled(TableRow)({
 
 const AssetsTable: FC = () => {
   const { data, loading } = useAssetsQuery();
-
-  console.log(data);
 
   const tableData = React.useMemo(
     () => (loading ? loadData : data?.assets),
