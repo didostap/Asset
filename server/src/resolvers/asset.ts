@@ -7,12 +7,14 @@ import {
   Float,
   InputType,
   Mutation,
+  ObjectType,
   Query,
   Resolver,
 } from 'type-graphql';
-import { IsIn, IsOptional, IsPositive, Length } from 'class-validator';
+import { IsIn, IsOptional, IsPositive, Length, Min } from 'class-validator';
 import { CURRENCIES, INCREASES } from '../constants';
 import { UserInputError } from 'apollo-server-express';
+import { QueryOrder } from '@mikro-orm/core';
 
 @InputType()
 class AssetInput {
@@ -44,6 +46,26 @@ class AssetInput {
   interval?: number;
 }
 
+@InputType()
+class CreateAssetInput {
+  @Field({ description: 'Assets limit' })
+  @Min(1)
+  limit!: number;
+
+  @Field({ description: 'Assets offset' })
+  @Min(0)
+  offset!: number;
+}
+
+@ObjectType()
+class PaginatedAssets {
+  @Field(() => [Asset])
+  assets!: Asset[];
+
+  @Field()
+  hasNextPage!: boolean;
+}
+
 @Resolver()
 export class AssetResolver {
   @Query(() => Asset, { nullable: true, description: 'Get asset by id' })
@@ -54,9 +76,26 @@ export class AssetResolver {
     return em.findOne(Asset, id);
   }
 
-  @Query(() => [Asset], { nullable: true, description: 'Get all assets' })
-  assets(@Ctx() { em }: MyContext): Promise<Asset[]> {
-    return em.find(Asset, {});
+  @Query(() => PaginatedAssets, {
+    nullable: true,
+    description: 'Get all assets',
+  })
+  async assets(
+    @Arg('input') input: CreateAssetInput,
+    @Ctx() { em }: MyContext
+  ): Promise<PaginatedAssets> {
+    const assets = await em.find(
+      Asset,
+      {},
+      {
+        limit: input.limit,
+        offset: input.offset,
+        orderBy: { createdAt: QueryOrder.DESC },
+      }
+    );
+
+    const hasNextPage = assets.length === input.limit;
+    return { assets, hasNextPage };
   }
 
   @Mutation(() => Asset, { description: 'Create asset' })
@@ -83,8 +122,6 @@ export class AssetResolver {
       );
 
     const asset = em.create(Asset, input);
-    console.log(asset);
-
     await em.persistAndFlush(asset);
     return asset;
   }
