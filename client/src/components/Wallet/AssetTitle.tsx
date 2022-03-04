@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { Add } from '@mui/icons-material';
 import { Box, Typography, Button } from '@mui/material';
 
@@ -7,7 +7,7 @@ interface Props {
   toggle: () => void;
 }
 
-const AssetTitle: FC<Props> = ({open, toggle}) => {
+const AssetTitle: FC<Props> = ({ open, toggle }) => {
   return (
     <Box
       mb="2rem"
@@ -45,4 +45,4 @@ const AssetTitle: FC<Props> = ({open, toggle}) => {
   );
 };
 
-export default AssetTitle;
+export default memo(AssetTitle);

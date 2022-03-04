@@ -6,10 +6,7 @@ const Layout: FC = ({ children }) => {
   return (
     <Box display="flex">
       <Menu />
-      <Box
-        component="main"
-        sx={{ pl: '4rem', pr: '4rem', pt: '2.25rem', flexGrow: 1 }}
-      >
+      <Box component="main" pl="4rem" pr="4rem" pt="2.25rem" flexGrow={1}>
         {children}
       </Box>
     </Box>
