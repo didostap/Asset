@@ -6,10 +6,11 @@ import { Asset } from './entities/Asset';
 
 const mikroConfig: Options<PostgreSqlDriver> = {
   entities: [Asset],
-  dbName: 'asset',
+  dbName: 'postgres',
   type: 'postgresql',
-  user: 'mac',
-  password: '1',
+  host: process.env.GCP_SQL_HOST,
+  user: process.env.GCP_SQL_USER,
+  password: process.env.GCP_SQL_USER_PASS,
   debug: !__prod__,
   migrations: {
     glob: '^[w-]+d+.[tj]s$',

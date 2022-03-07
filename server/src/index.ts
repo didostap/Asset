@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import 'reflect-metadata';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
@@ -12,6 +13,10 @@ import { AssetResolver } from './resolvers/asset';
 
 const main = async () => {
   const orm = await MikroORM.init<PostgreSqlDriver>(mikroConfig);
+  // const generator = orm.getSchemaGenerator();
+  // await generator.dropSchema();
+  // await generator.createSchema();
+  // await generator.updateSchema({ wrap: false });
 
   const app = express();
   const httpServer = http.createServer(app);
