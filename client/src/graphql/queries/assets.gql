@@ -1,5 +1,8 @@
-query Assets {
-  assets {
-    ...RegularAsset
+query Assets($input: CreateAssetInput!) {
+  assets(input: $input) {
+    assets {
+      ...RegularAsset
+    }
+    hasNextPage
   }
 }

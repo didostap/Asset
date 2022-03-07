@@ -1,59 +1,68 @@
 import React, { FC, memo } from 'react';
 import { Clear, Remove } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { CircularProgress, IconButton } from '@mui/material';
 import { Asset } from '../../../generated/graphql';
 import { AssetColumn } from '../constants';
 import { StyledTableRow, StyledTableCell } from './mixins';
 
 interface IRows {
-  index: number;
   style: any;
+  index: number;
   data: {
     items: Asset[];
     columns: AssetColumn[];
+    isItemLoaded: (index: number) => boolean;
   };
 }
 
 interface IRow {
-  lastRow: boolean;
   column: AssetColumn;
   item: Asset[keyof Asset];
 }
 
-const Row: FC<IRow> = memo(({ item, column, lastRow }) => {
-  if (column.dataKey === 'percent') {
-    if (item) return <>{item}%</>;
-    return (
-      <IconButton sx={{ marginLeft: '-5px' }} size="small">
-        <Remove fontSize="small" />
-      </IconButton>
-    );
-  } else if (lastRow) {
-    return (
-      <IconButton sx={{ marginLeft: '2rem' }} size="small">
-        <Clear fontSize="small" />
-      </IconButton>
-    );
-  } else {
-    return <>{item}</>;
+const Row: FC<IRow> = memo(({ item, column }) => {
+  switch (column.label) {
+    case 'PERCENT':
+      return item ? (
+        <>{item}%</>
+      ) : (
+        <IconButton sx={{ marginLeft: '-5px' }} size="small">
+          <Remove fontSize="small" />
+        </IconButton>
+      );
+    case '':
+      return (
+        <IconButton sx={{ marginLeft: '2rem' }} size="small">
+          <Clear fontSize="small" />
+        </IconButton>
+      );
+    default:
+      return <>{item}</>;
   }
 });
 
-const Rows: FC<IRows> = ({ index, style, data: { items, columns } }) => {
+const Rows: FC<IRows> = ({
+  index,
+  style,
+  data: { items, columns, isItemLoaded },
+}) => {
   const item = items[index];
   const even = !!(index % 2);
 
   return (
-    <StyledTableRow even={even} sx={{ ...style }}>
-      {columns.map((column, colIndex) => (
-        <StyledTableCell key={item.id + colIndex}>
-          <Row
-            column={column}
-            item={item[column.dataKey]}
-            lastRow={columns.length - 1 === colIndex}
-          />
-        </StyledTableCell>
-      ))}
+    <StyledTableRow
+      even={even}
+      sx={[{ ...style }, !isItemLoaded(index) && { justifyContent: 'center' }]}
+    >
+      {!isItemLoaded(index) ? (
+        <CircularProgress color="inherit" />
+      ) : (
+        columns.map((column, colIndex) => (
+          <StyledTableCell key={item.id + colIndex}>
+            <Row column={column} item={item[column.dataKey]} />
+          </StyledTableCell>
+        ))
+      )}
     </StyledTableRow>
   );
 };

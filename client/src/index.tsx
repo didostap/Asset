@@ -5,7 +5,8 @@ import reportWebVitals from './reportWebVitals';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ApolloClient, ApolloProvider } from '@apollo/client';
+import { cache } from './utils/cache';
 
 const theme = createTheme({
   palette: {
@@ -16,8 +17,8 @@ const theme = createTheme({
 });
 
 const client = new ApolloClient({
+  cache,
   uri: 'http://localhost:4000',
-  cache: new InMemoryCache(),
 });
 
 ReactDOM.render(

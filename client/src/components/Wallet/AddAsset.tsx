@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useCallback } from 'react';
 import { Box, Button, MenuItem, Theme, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import { currencies, increases, textFieldProps } from './constants';
@@ -6,7 +6,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Input from '../Common/Input';
 import { REUIRED_FIELD, MIN_1 } from '../../constants';
 import {
-  AssetsDocument,
+  RegularAssetFragmentDoc,
   useCreateAssetMutation,
 } from '../../generated/graphql';
 import { onChangeNumber } from '../../utils/input';
@@ -45,7 +45,25 @@ interface FormProps {
 
 const AddAsset: FC<Props> = ({ open, toggle }) => {
   const [createAsset] = useCreateAssetMutation({
-    refetchQueries: [{ query: AssetsDocument }],
+    update(cache, result) {
+      cache.modify({
+        fields: {
+          assets(exisitingAssets = []) {
+            const { assets, ...restData } = exisitingAssets;
+            console.log('exisitingAssets', exisitingAssets);
+            const newAssetRef = cache.writeFragment({
+              data: result.data!.createAsset,
+              fragment: RegularAssetFragmentDoc,
+            });
+
+            return {
+              ...restData,
+              assets: [newAssetRef, ...exisitingAssets.assets],
+            };
+          },
+        },
+      });
+    },
   });
 
   const { handleSubmit, watch, control, reset } = useForm<FormProps>({
@@ -70,22 +88,25 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
       : undefined,
   };
 
-  const onSubmit: SubmitHandler<FormProps> = async (data) => {
-    const { increase, interval, percent, ...rest } = data;
+  const onSubmit: SubmitHandler<FormProps> = useCallback(
+    async (data) => {
+      const { increase, interval, percent, ...rest } = data;
 
-    const input: Partial<FormProps> = { ...rest };
-    if (interval && percent) {
-      input.interval = interval;
-      input.percent = percent;
-    }
+      const input: Partial<FormProps> = { ...rest };
+      if (interval && percent) {
+        input.interval = interval;
+        input.percent = percent;
+      }
 
-    if (increase !== 'none') input.increase = increase;
+      if (increase !== 'none') input.increase = increase;
 
-    // @ts-ignore: Unreachable code error
-    await createAsset({ variables: { input } });
-    toggle();
-    reset();
-  };
+      // @ts-ignore: Unreachable code error
+      await createAsset({ variables: { input } });
+      toggle();
+      reset();
+    },
+    [createAsset, reset, toggle]
+  );
 
   return (
     <Container open={open}>

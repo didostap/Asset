@@ -53,6 +53,13 @@ export type AssetInput = {
   percent?: InputMaybe<Scalars['Float']>;
 };
 
+export type CreateAssetInput = {
+  /** Assets limit */
+  limit: Scalars['Float'];
+  /** Assets offset */
+  offset: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Create asset */
@@ -64,17 +71,28 @@ export type MutationCreateAssetArgs = {
   input: AssetInput;
 };
 
+export type PaginatedAssets = {
+  __typename?: 'PaginatedAssets';
+  assets: Array<Asset>;
+  hasNextPage: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Get asset by id */
   asset?: Maybe<Asset>;
   /** Get all assets */
-  assets?: Maybe<Array<Asset>>;
+  assets?: Maybe<PaginatedAssets>;
 };
 
 
 export type QueryAssetArgs = {
   id: Scalars['Float'];
+};
+
+
+export type QueryAssetsArgs = {
+  input: CreateAssetInput;
 };
 
 export type RegularAssetFragment = { __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string };
@@ -86,10 +104,12 @@ export type CreateAssetMutationVariables = Exact<{
 
 export type CreateAssetMutation = { __typename?: 'Mutation', createAsset: { __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string } };
 
-export type AssetsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AssetsQueryVariables = Exact<{
+  input: CreateAssetInput;
+}>;
 
 
-export type AssetsQuery = { __typename?: 'Query', assets?: Array<{ __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string }> | null };
+export type AssetsQuery = { __typename?: 'Query', assets?: { __typename?: 'PaginatedAssets', hasNextPage: boolean, assets: Array<{ __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string }> } | null };
 
 export const RegularAssetFragmentDoc = gql`
     fragment RegularAsset on Asset {
@@ -138,9 +158,12 @@ export type CreateAssetMutationHookResult = ReturnType<typeof useCreateAssetMuta
 export type CreateAssetMutationResult = Apollo.MutationResult<CreateAssetMutation>;
 export type CreateAssetMutationOptions = Apollo.BaseMutationOptions<CreateAssetMutation, CreateAssetMutationVariables>;
 export const AssetsDocument = gql`
-    query Assets {
-  assets {
-    ...RegularAsset
+    query Assets($input: CreateAssetInput!) {
+  assets(input: $input) {
+    assets {
+      ...RegularAsset
+    }
+    hasNextPage
   }
 }
     ${RegularAssetFragmentDoc}`;
@@ -157,10 +180,11 @@ export const AssetsDocument = gql`
  * @example
  * const { data, loading, error } = useAssetsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useAssetsQuery(baseOptions?: Apollo.QueryHookOptions<AssetsQuery, AssetsQueryVariables>) {
+export function useAssetsQuery(baseOptions: Apollo.QueryHookOptions<AssetsQuery, AssetsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<AssetsQuery, AssetsQueryVariables>(AssetsDocument, options);
       }
