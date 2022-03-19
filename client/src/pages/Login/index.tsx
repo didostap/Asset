@@ -32,7 +32,6 @@ const Login = () => {
           onSuccess={handleSignIn}
           clientId="298295978358-t7mia8mji0119chnnf0lkpbv4v7lotdc.apps.googleusercontent.com"
         />
-        {/* <GoogleLogout clientId="298295978358-t7mia8mji0119chnnf0lkpbv4v7lotdc.apps.googleusercontent.com" /> */}
       </Box>
     </Box>
   );
