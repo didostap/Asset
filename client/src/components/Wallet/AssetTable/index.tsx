@@ -27,7 +27,7 @@ const AssetsTable: FC = () => {
   );
 
   return (
-    <Table component="div" sx={{ height: '80vh', width: '100%' }}>
+    <Table component="div" sx={{ height: '75vh', width: '100%' }}>
       <TableHead component="div">
         <TableColumns columns={ASSET_COLUMNS} />
       </TableHead>

@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { ApolloClient, ApolloProvider } from '@apollo/client';
 import { cache } from './utils/cache';
+import { AuthProvider } from './context/AuthContext';
 
 const theme = createTheme({
   palette: {
@@ -19,17 +20,20 @@ const theme = createTheme({
 const client = new ApolloClient({
   cache,
   uri: 'http://localhost:4000',
+  credentials: 'include',
 });
 
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <App />
-        </ThemeProvider>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </BrowserRouter>
+      </AuthProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')

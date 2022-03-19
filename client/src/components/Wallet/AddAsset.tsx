@@ -50,7 +50,6 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
         fields: {
           assets(exisitingAssets = []) {
             const { assets, ...restData } = exisitingAssets;
-            console.log('exisitingAssets', exisitingAssets);
             const newAssetRef = cache.writeFragment({
               data: result.data!.createAsset,
               fragment: RegularAssetFragmentDoc,

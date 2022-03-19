@@ -1,13 +1,23 @@
-import React, { FC } from 'react';
-import { Box } from '@mui/material';
+import React, { FC, Suspense } from 'react';
+import { Box, LinearProgress } from '@mui/material';
 import Menu from './Menu';
+import Header from './Header';
+import { useAuth } from '../context/AuthContext';
+import { Outlet } from 'react-router-dom';
 
-const Layout: FC = ({ children }) => {
+const Layout: FC = () => {
+  const data = useAuth();
+
   return (
     <Box display="flex">
       <Menu />
-      <Box component="main" pl="4rem" pr="4rem" pt="2.25rem" flexGrow={1}>
-        {children}
+      <Box display="flex" flexDirection="column" flexGrow={1}>
+        <Header user={data.user} />
+        <Box component="main" pl="4rem" pr="4rem" flexGrow={1}>
+          <Suspense fallback={<LinearProgress color="inherit" />}>
+            <Outlet />
+          </Suspense>
+        </Box>
       </Box>
     </Box>
   );
