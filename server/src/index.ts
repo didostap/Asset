@@ -10,6 +10,11 @@ import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import mikroConfig from './mikro-orm.config';
 import { MyContext } from './types';
 import { AssetResolver } from './resolvers/asset';
+import corsConfig from './utils/cors.config';
+import { __prod__ } from './constants';
+import sessConfig from './utils/session.config';
+import { UserResolver } from './resolvers/user';
+import { authPermission } from './utils/permissions';
 
 const main = async () => {
   const orm = await MikroORM.init<PostgreSqlDriver>(mikroConfig);
@@ -19,13 +24,27 @@ const main = async () => {
   // await generator.updateSchema({ wrap: false });
 
   const app = express();
+
+  if (!__prod__) {
+    app.set('trust proxy', 1);
+  }
+  app.use(corsConfig);
+  app.use(sessConfig);
+
   const httpServer = http.createServer(app);
 
   const server = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [AssetResolver],
+      resolvers: [UserResolver, AssetResolver],
     }),
-    context: ({ req, res }): MyContext => ({ em: orm.em.fork(), req, res }),
+    context: ({ req, res }): MyContext => {
+      authPermission({
+        isUser: !!req.session.userId,
+        operationName: req.body.operationName,
+      });
+
+      return { em: orm.em.fork(), req, res };
+    },
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
@@ -34,6 +53,7 @@ const main = async () => {
   server.applyMiddleware({
     app,
     path: '/',
+    cors: false,
   });
 
   httpServer.listen({ port: 4000 });
