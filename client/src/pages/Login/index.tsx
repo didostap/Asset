@@ -9,6 +9,7 @@ const Login = () => {
       cache.modify({
         fields: {
           currentUser() {
+            console.log(result.data?.signIn);
             return result.data?.signIn;
           },
         },

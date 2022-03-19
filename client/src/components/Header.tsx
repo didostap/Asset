@@ -8,23 +8,11 @@ interface Props {
 }
 
 const Header: FC<Props> = ({ user }) => {
-  const [signOut, { client }] = useSignOutMutation({
-    /*Update cache to trigger rerender because clearStore won't*/
-    update(cache) {
-      cache.modify({
-        fields: {
-          currentUser() {
-            return null;
-          },
-        },
-      });
-    },
-  });
+  const [signOut, { client }] = useSignOutMutation();
 
   const onSignOut = useCallback(async () => {
     await signOut();
-    /*Use clearStode instead of resetStore to omit refetching queries which need cooikes*/
-    await client.clearStore();
+    await client.resetStore();
   }, [client, signOut]);
 
   return (
