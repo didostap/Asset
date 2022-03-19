@@ -1,5 +1,6 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Field, ID, ObjectType } from 'type-graphql';
+import { User } from './User';
 
 @ObjectType({ description: 'Asset model' })
 @Entity()
@@ -7,6 +8,10 @@ export class Asset {
   @Field(() => ID, { description: 'The id of the asset' })
   @PrimaryKey()
   id!: number;
+
+  @Field(() => User, { description: 'The owner user of the asset' })
+  @ManyToOne()
+  user!: User;
 
   @Field(() => String, { description: 'The name of the asset' })
   @Property()

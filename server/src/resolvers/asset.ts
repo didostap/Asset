@@ -1,5 +1,3 @@
-import { Asset } from '../entities/Asset';
-import { MyContext } from 'src/types';
 import {
   Arg,
   Ctx,
@@ -12,9 +10,12 @@ import {
   Resolver,
 } from 'type-graphql';
 import { IsIn, IsOptional, IsPositive, Length, Min } from 'class-validator';
-import { CURRENCIES, INCREASES } from '../constants';
 import { UserInputError } from 'apollo-server-express';
 import { QueryOrder } from '@mikro-orm/core';
+import { MyContext } from 'src/types';
+import { CURRENCIES, INCREASES } from '../constants';
+import { Asset } from '../entities/Asset';
+import { User } from '../entities/User';
 
 @InputType()
 class AssetInput {
@@ -60,7 +61,7 @@ class CreateAssetInput {
 @ObjectType()
 class PaginatedAssets {
   @Field(() => [Asset])
-  assets!: Asset[];
+  assets?: Asset[] | unknown;
 
   @Field()
   hasNextPage!: boolean;
@@ -82,26 +83,25 @@ export class AssetResolver {
   })
   async assets(
     @Arg('input') input: CreateAssetInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { req, em }: MyContext
   ): Promise<PaginatedAssets> {
-    const assets = await em.find(
-      Asset,
-      {},
-      {
-        limit: input.limit,
-        offset: input.offset,
-        orderBy: { createdAt: QueryOrder.DESC },
-      }
-    );
+    const userId = req.session.userId;
+    const user = await em.findOne(User, userId);
 
-    const hasNextPage = assets.length === input.limit;
+    const assets = await user?.assets?.matching({
+      limit: input.limit,
+      offset: input.offset,
+      orderBy: { createdAt: QueryOrder.DESC },
+    });
+
+    const hasNextPage = assets?.length === input.limit;
     return { assets, hasNextPage };
   }
 
   @Mutation(() => Asset, { description: 'Create asset' })
   async createAsset(
     @Arg('input', { validate: true }) input: AssetInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { req, em }: MyContext
   ): Promise<Asset | void> {
     if (
       (input.increase && !input.interval && !input.percent) ||
@@ -121,7 +121,10 @@ export class AssetResolver {
         }
       );
 
-    const asset = em.create(Asset, input);
+    const userId = req.session.userId;
+    const user = await em.findOne(User, userId);
+
+    const asset = em.create(Asset, { ...input, user });
     await em.persistAndFlush(asset);
     return asset;
   }

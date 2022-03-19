@@ -1,5 +1,13 @@
-import { Entity, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import {
+  Collection,
+  Entity,
+  OneToMany,
+  PrimaryKey,
+  Property,
+  Unique,
+} from '@mikro-orm/core';
 import { Field, ID, ObjectType } from 'type-graphql';
+import { Asset } from './Asset';
 
 @ObjectType({ description: 'User model' })
 @Entity()
@@ -19,6 +27,10 @@ export class User {
   @Field(() => String, { description: 'The first name of the user' })
   @Property()
   firstName!: string;
+
+  @Field(() => [Asset], { description: 'Assets of the user' })
+  @OneToMany(() => Asset, (asset) => asset.user)
+  assets = new Collection<Asset>(this);
 
   @Field(() => String, { description: 'The last name of the user' })
   @Property()
