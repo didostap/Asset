@@ -10,7 +10,7 @@ const AuthContext = React.createContext<IAuthContext>({});
 
 export const AuthProvider: React.FC = ({ children }) => {
   const { data, loading } = useCurrentUserQuery();
-  console.log('DATA', data);
+
   const value = {
     user: data?.currentUser,
     isUser: loading ? true : !!data?.currentUser,
