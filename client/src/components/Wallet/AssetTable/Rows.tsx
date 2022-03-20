@@ -11,6 +11,7 @@ interface IRows {
   data: {
     items: Asset[];
     columns: AssetColumn[];
+    deleteAsset: (id: string) => () => void;
     isItemLoaded: (index: number) => boolean;
   };
 }
@@ -18,9 +19,10 @@ interface IRows {
 interface IRow {
   column: AssetColumn;
   item: Asset[keyof Asset];
+  deleteAsset: () => void;
 }
 
-const Row: FC<IRow> = memo(({ item, column }) => {
+const Row: FC<IRow> = memo(({ item, column, deleteAsset }) => {
   switch (column.label) {
     case 'PERCENT':
       return item ? (
@@ -32,7 +34,11 @@ const Row: FC<IRow> = memo(({ item, column }) => {
       );
     case '':
       return (
-        <IconButton sx={{ marginLeft: '2rem' }} size="small">
+        <IconButton
+          onClick={deleteAsset}
+          sx={{ marginLeft: '2rem' }}
+          size="small"
+        >
           <Clear fontSize="small" />
         </IconButton>
       );
@@ -44,7 +50,7 @@ const Row: FC<IRow> = memo(({ item, column }) => {
 const Rows: FC<IRows> = ({
   index,
   style,
-  data: { items, columns, isItemLoaded },
+  data: { items, columns, deleteAsset, isItemLoaded },
 }) => {
   const item = items[index];
   const even = !!(index % 2);
@@ -59,7 +65,11 @@ const Rows: FC<IRows> = ({
       ) : (
         columns.map((column, colIndex) => (
           <StyledTableCell key={item.id + colIndex}>
-            <Row column={column} item={item[column.dataKey]} />
+            <Row
+              column={column}
+              item={item[column.dataKey]}
+              deleteAsset={deleteAsset(item.id)}
+            />
           </StyledTableCell>
         ))
       )}

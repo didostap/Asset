@@ -36,6 +36,8 @@ export type Asset = {
   percent?: Maybe<Scalars['Float']>;
   /** The asset updated date */
   updatedAt: Scalars['String'];
+  /** The owner user of the asset */
+  user?: Maybe<User>;
 };
 
 export type AssetInput = {
@@ -64,6 +66,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Create asset */
   createAsset: Asset;
+  /** Delete asset */
+  deleteAsset: Scalars['Float'];
   /** Login user */
   signIn: User;
   /** Logout user */
@@ -73,6 +77,11 @@ export type Mutation = {
 
 export type MutationCreateAssetArgs = {
   input: AssetInput;
+};
+
+
+export type MutationDeleteAssetArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -109,6 +118,8 @@ export type QueryAssetsArgs = {
 /** User model */
 export type User = {
   __typename?: 'User';
+  /** Assets of the user */
+  assets?: Maybe<Array<Asset>>;
   /** The email of the user */
   email: Scalars['String'];
   /** The first name of the user */
@@ -129,6 +140,13 @@ export type CreateAssetMutationVariables = Exact<{
 
 
 export type CreateAssetMutation = { __typename?: 'Mutation', createAsset: { __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string } };
+
+export type DeleteAssetMutationVariables = Exact<{
+  deleteAssetId: Scalars['Float'];
+}>;
+
+
+export type DeleteAssetMutation = { __typename?: 'Mutation', deleteAsset: number };
 
 export type SignInMutationVariables = Exact<{
   idToken: Scalars['String'];
@@ -200,6 +218,37 @@ export function useCreateAssetMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateAssetMutationHookResult = ReturnType<typeof useCreateAssetMutation>;
 export type CreateAssetMutationResult = Apollo.MutationResult<CreateAssetMutation>;
 export type CreateAssetMutationOptions = Apollo.BaseMutationOptions<CreateAssetMutation, CreateAssetMutationVariables>;
+export const DeleteAssetDocument = gql`
+    mutation DeleteAsset($deleteAssetId: Float!) {
+  deleteAsset(id: $deleteAssetId)
+}
+    `;
+export type DeleteAssetMutationFn = Apollo.MutationFunction<DeleteAssetMutation, DeleteAssetMutationVariables>;
+
+/**
+ * __useDeleteAssetMutation__
+ *
+ * To run a mutation, you first call `useDeleteAssetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAssetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAssetMutation, { data, loading, error }] = useDeleteAssetMutation({
+ *   variables: {
+ *      deleteAssetId: // value for 'deleteAssetId'
+ *   },
+ * });
+ */
+export function useDeleteAssetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAssetMutation, DeleteAssetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAssetMutation, DeleteAssetMutationVariables>(DeleteAssetDocument, options);
+      }
+export type DeleteAssetMutationHookResult = ReturnType<typeof useDeleteAssetMutation>;
+export type DeleteAssetMutationResult = Apollo.MutationResult<DeleteAssetMutation>;
+export type DeleteAssetMutationOptions = Apollo.BaseMutationOptions<DeleteAssetMutation, DeleteAssetMutationVariables>;
 export const SignInDocument = gql`
     mutation SignIn($idToken: String!) {
   signIn(idToken: $idToken) {

@@ -11,7 +11,7 @@ import Rows from './Rows';
 import useAssets from './useAssets';
 
 const AssetsTable: FC = () => {
-  const { assets, hasNextPage, loadMoreAssets } = useAssets();
+  const { assets, hasNextPage, deleteAsset, loadMoreAssets } = useAssets();
   const assetsCount = hasNextPage ? assets.length + 1 : assets.length;
   const isAssetLoaded = useCallback(
     (index: number) => !hasNextPage || index < assets.length,
@@ -22,8 +22,9 @@ const AssetsTable: FC = () => {
       columns: ASSET_COLUMNS,
       items: convertAssets(assets),
       isItemLoaded: isAssetLoaded,
+      deleteAsset,
     }),
-    [assets, isAssetLoaded]
+    [assets, isAssetLoaded, deleteAsset]
   );
 
   return (
