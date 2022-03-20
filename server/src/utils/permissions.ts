@@ -12,7 +12,8 @@ export const authPermission: AuthPermission = ({
   if (
     !isUser &&
     operationName !== 'CurrentUser' &&
-    operationName !== 'SignIn'
+    operationName !== 'SignIn' &&
+    operationName
   ) {
     throw new AuthenticationError('You must be logged in');
   }

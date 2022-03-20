@@ -128,4 +128,13 @@ export class AssetResolver {
     await em.persistAndFlush(asset);
     return asset;
   }
+
+  @Mutation(() => Number, { description: 'Delete asset' })
+  async deleteAsset(
+    @Arg('id') id: number,
+    @Ctx() { em }: MyContext
+  ): Promise<number> {
+    await em.nativeDelete(Asset, { id });
+    return id;
+  }
 }

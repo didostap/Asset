@@ -9,7 +9,10 @@ export class Asset {
   @PrimaryKey()
   id!: number;
 
-  @Field(() => User, { description: 'The owner user of the asset' })
+  @Field(() => User, {
+    description: 'The owner user of the asset',
+    nullable: true,
+  })
   @ManyToOne()
   user!: User;
 

@@ -28,9 +28,9 @@ export class User {
   @Property()
   firstName!: string;
 
-  @Field(() => [Asset], { description: 'Assets of the user' })
-  @OneToMany(() => Asset, (asset) => asset.user)
-  assets = new Collection<Asset>(this);
+  @Field(() => [Asset], { description: 'Assets of the user', nullable: true })
+  @OneToMany(() => Asset, (asset) => asset.user, { nullable: true })
+  assets? = new Collection<Asset>(this);
 
   @Field(() => String, { description: 'The last name of the user' })
   @Property()
