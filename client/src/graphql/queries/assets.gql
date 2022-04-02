@@ -1,4 +1,4 @@
-query Assets($input: CreateAssetInput!) {
+query Assets($input: AssetsInput!) {
   assets(input: $input) {
     assets {
       ...RegularAsset

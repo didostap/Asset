@@ -23,15 +23,17 @@ export type Asset = {
   /** The asset created date */
   createdAt: Scalars['String'];
   /** The currency of the asset */
-  currency: Scalars['String'];
+  currency: Currencies;
   /** The id of the asset */
   id: Scalars['ID'];
   /** The type of increase interval of the asset */
-  increase?: Maybe<Scalars['String']>;
+  increase?: Maybe<Increases>;
   /** The increase interval of the asset */
   interval?: Maybe<Scalars['Float']>;
   /** The name of the asset */
   name: Scalars['String'];
+  /** Next update date */
+  nextIncreaseDate?: Maybe<Scalars['String']>;
   /** The percent of the asset */
   percent?: Maybe<Scalars['Float']>;
   /** The asset updated date */
@@ -40,7 +42,14 @@ export type Asset = {
   user?: Maybe<User>;
 };
 
-export type AssetInput = {
+export type AssetsInput = {
+  /** Assets limit */
+  limit: Scalars['Float'];
+  /** Assets offset */
+  offset: Scalars['Float'];
+};
+
+export type CreateAssetInput = {
   /** Asset amount */
   amount: Scalars['Float'];
   /** Asset currency */
@@ -55,12 +64,21 @@ export type AssetInput = {
   percent?: InputMaybe<Scalars['Float']>;
 };
 
-export type CreateAssetInput = {
-  /** Assets limit */
-  limit: Scalars['Float'];
-  /** Assets offset */
-  offset: Scalars['Float'];
-};
+/** Possible asset currencies */
+export enum Currencies {
+  Eur = 'EUR',
+  Uah = 'UAH',
+  Usd = 'USD'
+}
+
+/** Possible asset increases */
+export enum Increases {
+  Daily = 'DAILY',
+  Monthly = 'MONTHLY',
+  None = 'NONE',
+  Weekly = 'WEEKLY',
+  Yearly = 'YEARLY'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -76,7 +94,7 @@ export type Mutation = {
 
 
 export type MutationCreateAssetArgs = {
-  input: AssetInput;
+  input: CreateAssetInput;
 };
 
 
@@ -112,7 +130,7 @@ export type QueryAssetArgs = {
 
 
 export type QueryAssetsArgs = {
-  input: CreateAssetInput;
+  input: AssetsInput;
 };
 
 /** User model */
@@ -128,18 +146,20 @@ export type User = {
   googleId?: Maybe<Scalars['String']>;
   /** The id of the User */
   id: Scalars['ID'];
+  /** Last update date of user related entities */
+  lastEntityUpdateDate?: Maybe<Scalars['String']>;
   /** The last name of the user */
   lastName: Scalars['String'];
 };
 
-export type RegularAssetFragment = { __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string };
+export type RegularAssetFragment = { __typename?: 'Asset', id: string, name: string, amount: number, currency: Currencies, percent?: number | null, increase?: Increases | null, interval?: number | null, createdAt: string, updatedAt: string };
 
 export type CreateAssetMutationVariables = Exact<{
-  input: AssetInput;
+  input: CreateAssetInput;
 }>;
 
 
-export type CreateAssetMutation = { __typename?: 'Mutation', createAsset: { __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string } };
+export type CreateAssetMutation = { __typename?: 'Mutation', createAsset: { __typename?: 'Asset', id: string, name: string, amount: number, currency: Currencies, percent?: number | null, increase?: Increases | null, interval?: number | null, createdAt: string, updatedAt: string } };
 
 export type DeleteAssetMutationVariables = Exact<{
   deleteAssetId: Scalars['Float'];
@@ -161,11 +181,11 @@ export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
 export type SignOutMutation = { __typename?: 'Mutation', signOut: boolean };
 
 export type AssetsQueryVariables = Exact<{
-  input: CreateAssetInput;
+  input: AssetsInput;
 }>;
 
 
-export type AssetsQuery = { __typename?: 'Query', assets?: { __typename?: 'PaginatedAssets', hasNextPage: boolean, assets: Array<{ __typename?: 'Asset', id: string, name: string, amount: number, currency: string, percent?: number | null, increase?: string | null, interval?: number | null, createdAt: string, updatedAt: string }> } | null };
+export type AssetsQuery = { __typename?: 'Query', assets?: { __typename?: 'PaginatedAssets', hasNextPage: boolean, assets: Array<{ __typename?: 'Asset', id: string, name: string, amount: number, currency: Currencies, percent?: number | null, increase?: Increases | null, interval?: number | null, createdAt: string, updatedAt: string }> } | null };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -186,7 +206,7 @@ export const RegularAssetFragmentDoc = gql`
 }
     `;
 export const CreateAssetDocument = gql`
-    mutation CreateAsset($input: AssetInput!) {
+    mutation CreateAsset($input: CreateAssetInput!) {
   createAsset(input: $input) {
     ...RegularAsset
   }
@@ -317,7 +337,7 @@ export type SignOutMutationHookResult = ReturnType<typeof useSignOutMutation>;
 export type SignOutMutationResult = Apollo.MutationResult<SignOutMutation>;
 export type SignOutMutationOptions = Apollo.BaseMutationOptions<SignOutMutation, SignOutMutationVariables>;
 export const AssetsDocument = gql`
-    query Assets($input: CreateAssetInput!) {
+    query Assets($input: AssetsInput!) {
   assets(input: $input) {
     assets {
       ...RegularAsset
