@@ -40,4 +40,11 @@ export class User {
   @Property()
   @Unique()
   email!: string;
+
+  @Field(() => String, {
+    description: 'Last update date of user related entities',
+    nullable: true,
+  })
+  @Property({ type: 'Date', nullable: true })
+  lastEntityUpdateDate?: Date;
 }

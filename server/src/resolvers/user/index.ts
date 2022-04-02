@@ -1,8 +1,9 @@
-import { User } from '../entities/User';
+import { User } from '../../entities/User';
 import { MyContext } from 'src/types';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { OAuth2Client } from 'google-auth-library';
-import { COOKIE_NAME } from '../constants';
+import { COOKIE_NAME } from '../../constants';
+import { updateUserEntities } from './models';
 
 const googleClient = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
@@ -15,6 +16,7 @@ export class UserResolver {
   async currentUser(@Ctx() { req, em }: MyContext): Promise<User | null> {
     const id = req.session.userId;
     const user = await em.findOne(User, { id });
+    await updateUserEntities({ em, user: user as User });
     return user;
   }
 
@@ -45,7 +47,6 @@ export class UserResolver {
     });
     em.persistAndFlush(newUser);
     req.session.userId = newUser.id;
-
     return newUser;
   }
 

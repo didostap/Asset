@@ -1,6 +1,30 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Entity, Enum, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { User } from './User';
+
+export enum Currencies {
+  UAH = 'UAH',
+  USD = 'USD',
+  EUR = 'EUR',
+}
+
+export enum Increases {
+  NONE = '',
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly',
+}
+
+registerEnumType(Currencies, {
+  name: 'Currencies',
+  description: 'Possible asset currencies',
+});
+
+registerEnumType(Increases, {
+  name: 'Increases',
+  description: 'Possible asset increases',
+});
 
 @ObjectType({ description: 'Asset model' })
 @Entity()
@@ -24,9 +48,10 @@ export class Asset {
   @Property()
   amount!: number;
 
-  @Field(() => String, { description: 'The currency of the asset' })
-  @Property()
-  currency!: string;
+  // @ts-ignore: Unreachable code error
+  @Field((type) => Currencies, { description: 'The currency of the asset' })
+  @Enum(() => Currencies)
+  currency!: Currencies;
 
   @Field(() => Number, {
     description: 'The percent of the asset',
@@ -35,12 +60,13 @@ export class Asset {
   @Property({ nullable: true })
   percent?: number;
 
-  @Field(() => String, {
+  // @ts-ignore: Unreachable code error
+  @Field((type) => Increases, {
     description: 'The type of increase interval of the asset',
     nullable: true,
   })
-  @Property({ nullable: true })
-  increase?: string;
+  @Enum(() => Increases)
+  increase?: Increases;
 
   @Field(() => Number, {
     description: 'The increase interval of the asset',
@@ -48,6 +74,10 @@ export class Asset {
   })
   @Property({ nullable: true })
   interval?: number;
+
+  @Field(() => String, { description: 'Next update date', nullable: true })
+  @Property({ type: 'date', nullable: true })
+  nextIncreaseDate?: Date;
 
   @Field(() => String, { description: 'The asset created date' })
   @Property({ type: 'date' })

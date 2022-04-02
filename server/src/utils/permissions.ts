@@ -13,6 +13,7 @@ export const authPermission: AuthPermission = ({
     !isUser &&
     operationName !== 'CurrentUser' &&
     operationName !== 'SignIn' &&
+    operationName !== 'IntrospectionQuery' &&
     operationName
   ) {
     throw new AuthenticationError('You must be logged in');

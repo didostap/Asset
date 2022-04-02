@@ -13,12 +13,13 @@ import { IsIn, IsOptional, IsPositive, Length, Min } from 'class-validator';
 import { UserInputError } from 'apollo-server-express';
 import { QueryOrder } from '@mikro-orm/core';
 import { MyContext } from 'src/types';
-import { CURRENCIES, INCREASES } from '../constants';
-import { Asset } from '../entities/Asset';
-import { User } from '../entities/User';
+import { CURRENCIES, INCREASES } from '../../constants';
+import { Asset, Currencies, Increases } from '../../entities/Asset';
+import { User } from '../../entities/User';
+import { getAssetNextUpdateDate } from './models';
 
 @InputType()
-class AssetInput {
+class CreateAssetInput {
   @Field({ description: 'Asset name' })
   @Length(3, 30)
   name!: string;
@@ -29,7 +30,7 @@ class AssetInput {
 
   @Field({ description: 'Asset currency' })
   @IsIn(CURRENCIES)
-  currency!: string;
+  currency!: Currencies;
 
   @Field({ description: 'Asset percent', nullable: true })
   @IsOptional()
@@ -39,7 +40,7 @@ class AssetInput {
   @Field({ description: 'Type of asset increase interval', nullable: true })
   @IsOptional()
   @IsIn(INCREASES)
-  increase?: string;
+  increase?: Increases;
 
   @Field({ description: 'Asset increase interval', nullable: true })
   @IsOptional()
@@ -48,7 +49,7 @@ class AssetInput {
 }
 
 @InputType()
-class CreateAssetInput {
+class AssetsInput {
   @Field({ description: 'Assets limit' })
   @Min(1)
   limit!: number;
@@ -82,7 +83,7 @@ export class AssetResolver {
     description: 'Get all assets',
   })
   async assets(
-    @Arg('input') input: CreateAssetInput,
+    @Arg('input') input: AssetsInput,
     @Ctx() { req, em }: MyContext
   ): Promise<PaginatedAssets> {
     const userId = req.session.userId;
@@ -100,14 +101,14 @@ export class AssetResolver {
 
   @Mutation(() => Asset, { description: 'Create asset' })
   async createAsset(
-    @Arg('input', { validate: true }) input: AssetInput,
+    @Arg('input', { validate: true }) input: CreateAssetInput,
     @Ctx() { req, em }: MyContext
   ): Promise<Asset | void> {
     if (
       (input.increase && !input.interval && !input.percent) ||
       (!input.increase && input.interval && !input.percent) ||
       (!input.increase && !input.interval && input.percent)
-    )
+    ) {
       throw new UserInputError(
         'Percent and increaseInterval should be specified together',
         {
@@ -120,11 +121,22 @@ export class AssetResolver {
           }`,
         }
       );
+    }
 
     const userId = req.session.userId;
     const user = await em.findOne(User, userId);
 
-    const asset = em.create(Asset, { ...input, user });
+    const data: Omit<Asset, 'id' | 'user'> = { ...input };
+
+    // TODO Resolve issue with GMT
+    if (input.increase && input.interval) {
+      data.nextIncreaseDate = getAssetNextUpdateDate(
+        input.increase,
+        input.interval
+      );
+    }
+
+    const asset = em.create(Asset, { ...data, user });
     await em.persistAndFlush(asset);
     return asset;
   }
