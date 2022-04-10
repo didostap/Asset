@@ -1,7 +1,8 @@
 import React, { FC, memo, useCallback } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import { Logout } from '@mui/icons-material';
-import { User, useSignOutMutation } from '../generated/graphql';
+import { User, useSignOutMutation } from '../../generated/graphql';
+import Language from './Language';
 
 interface Props {
   user?: User | null;
@@ -24,7 +25,8 @@ const Header: FC<Props> = ({ user }) => {
       height="100px"
       p="30px"
     >
-      <Typography>
+      <Language />
+      <Typography ml="1rem">
         {user?.lastName}&nbsp;
         {user?.firstName}
       </Typography>

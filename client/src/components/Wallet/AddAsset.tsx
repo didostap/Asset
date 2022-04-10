@@ -4,12 +4,12 @@ import { styled } from '@mui/system';
 import { currencies, increases, textFieldProps } from './constants';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Input from '../Common/Input';
-import { REUIRED_FIELD, MIN_1 } from '../../constants';
 import {
   RegularAssetFragmentDoc,
   useCreateAssetMutation,
 } from '../../generated/graphql';
 import { onChangeNumber } from '../../utils/input';
+import { useTranslation } from 'react-i18next';
 
 const Container = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -44,6 +44,8 @@ interface FormProps {
 }
 
 const AddAsset: FC<Props> = ({ open, toggle }) => {
+  const { t } = useTranslation();
+
   const [createAsset] = useCreateAssetMutation({
     update(cache, result) {
       cache.modify({
@@ -82,7 +84,7 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
     min: enableIcreaseOptions
       ? {
           value: 1,
-          message: MIN_1,
+          message: t('min_one'),
         }
       : undefined,
   };
@@ -110,7 +112,7 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
   return (
     <Container open={open}>
       <Typography variant="h6" component="div">
-        Add Asset
+        {t('add_asset')}
       </Typography>
       <Box
         component="form"
@@ -127,9 +129,9 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
               control={control}
               textFieldProps={{
                 ...textFieldProps,
-                label: 'Asset Name',
+                label: t('asset_name'),
               }}
-              rules={{ required: REUIRED_FIELD }}
+              rules={{ required: t('required_field') as string }}
             />
           )}
         />
@@ -143,12 +145,17 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
               textFieldProps={{
                 ...textFieldProps,
                 type: 'number',
-                label: 'Amount',
+                label: t('amount'),
               }}
               InputProps={{
                 onChange: onChangeNumber(field),
               }}
-              rules={increaseRule}
+              rules={{
+                min: {
+                  value: 1,
+                  message: t('min_one'),
+                },
+              }}
             />
           )}
         />
@@ -162,9 +169,9 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
               textFieldProps={{
                 ...textFieldProps,
                 select: true,
-                label: 'Currency',
+                label: t('currency'),
               }}
-              rules={{ required: REUIRED_FIELD }}
+              rules={{ required: t('required_field') as string }}
             >
               {currencies.map((option) => (
                 <MenuItem key={option} value={option}>
@@ -185,13 +192,13 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
                 textFieldProps={{
                   ...textFieldProps,
                   select: true,
-                  label: 'Increase',
+                  label: t('increase'),
                 }}
-                rules={{ required: REUIRED_FIELD }}
+                rules={{ required: t('required_field') as string }}
               >
                 {increases.map((option) => (
-                  <MenuItem key={option.label} value={option.value}>
-                    {option.label}
+                  <MenuItem key={option} value={option}>
+                    {t(option)}
                   </MenuItem>
                 ))}
               </Input>
@@ -208,7 +215,7 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
                 textFieldProps={{
                   ...textFieldProps,
                   type: 'number',
-                  label: 'Interval',
+                  label: t('interval'),
                   disabled: !enableIcreaseOptions,
                 }}
                 InputProps={{
@@ -229,7 +236,7 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
               textFieldProps={{
                 ...textFieldProps,
                 type: 'number',
-                label: 'Percent',
+                label: t('percent'),
                 disabled: !enableIcreaseOptions,
               }}
               InputProps={{
@@ -240,7 +247,7 @@ const AddAsset: FC<Props> = ({ open, toggle }) => {
           )}
         />
         <Button sx={{ mt: '8px' }} type="submit" variant="contained">
-          Add
+          {t('add')}
         </Button>
       </Box>
     </Container>

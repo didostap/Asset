@@ -10,12 +10,12 @@ import {
 } from '@mui/icons-material';
 
 export const menuItems = [
-  { text: 'Home', Icon: GridViewOutlined, link: '/' },
-  { text: 'Echange', Icon: InsertChartOutlined, link: '/echange' },
-  { text: 'Prices', Icon: ArticleOutlined, link: '/' },
-  { text: 'Wallets', Icon: AccountBalanceWalletOutlined, link: '/wallets' },
-  { text: 'Promotions', Icon: ApiOutlined, link: '/' },
-  { text: 'Activities', Icon: TimelineOutlined, link: '/' },
-  { text: 'Notifications', Icon: NotificationsNoneOutlined, link: '/' },
-  { text: 'Settings', Icon: SettingsOutlined, link: '/' },
+  { i18key: 'home', Icon: GridViewOutlined, link: '/' },
+  { i18key: 'echange', Icon: InsertChartOutlined, link: '/echange' },
+  { i18key: 'prices', Icon: ArticleOutlined, link: '/' },
+  { i18key: 'wallets', Icon: AccountBalanceWalletOutlined, link: '/wallets' },
+  { i18key: 'promotions', Icon: ApiOutlined, link: '/' },
+  { i18key: 'activities', Icon: TimelineOutlined, link: '/' },
+  { i18key: 'notifications', Icon: NotificationsNoneOutlined, link: '/' },
+  { i18key: 'settings', Icon: SettingsOutlined, link: '/' },
 ] as const;

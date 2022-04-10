@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
+import './services/i18n';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter } from 'react-router-dom';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, LinearProgress } from '@mui/material';
 import { ApolloClient, ApolloProvider } from '@apollo/client';
 import { cache } from './utils/cache';
 import { AuthProvider } from './context/AuthContext';
@@ -30,7 +31,9 @@ ReactDOM.render(
         <BrowserRouter>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <App />
+            <Suspense fallback={<LinearProgress color="inherit" />}>
+              <App />
+            </Suspense>
           </ThemeProvider>
         </BrowserRouter>
       </AuthProvider>

@@ -1,0 +1,31 @@
+{
+  "home": "Home",
+  "echange": "Echange",
+  "prices": "Prices",
+  "wallets": "Wallets",
+  "promotions": "Promotions",
+  "activities": "Activities",
+  "notifications": "Notifications",
+  "settings": "Settings",
+
+  "asset_balances": "Asset Balances",
+  "asset": "Asset",
+  "amount":"Amount",
+  "currency": "Currency",
+  "percent": "Percent",
+  "created_at": "Created",
+
+  "add_asset": "Add Asset",
+  "asset_name": "Asset name",
+  "increase": "Increase",
+  "interval": "Interval",
+  "add": "Add",
+  "none": "None",
+  "daily": "Daily",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "yearly": "Yearly",
+
+  "required_field": "Field is required",
+  "min_one": "At least 1"
+}

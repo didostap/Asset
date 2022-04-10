@@ -9,26 +9,11 @@ export const textFieldProps = {
 export const currencies = ['USD', 'EUR', 'UAH'] as const;
 
 export const increases = [
-  {
-    label: 'None',
-    value: 'none',
-  },
-  {
-    label: 'Daily',
-    value: 'daily',
-  },
-  {
-    label: 'Weekly',
-    value: 'weekly',
-  },
-  {
-    label: 'Monthly',
-    value: 'monthly',
-  },
-  {
-    label: 'Yearly',
-    value: 'yearly',
-  },
+  'none',
+  'daily',
+  'weekly',
+  'monthly',
+  'yearly',
 ] as const;
 
 export interface AssetColumn {
@@ -38,23 +23,23 @@ export interface AssetColumn {
 
 export const ASSET_COLUMNS = [
   {
-    label: 'ASSET',
+    label: 'asset',
     dataKey: 'name',
   },
   {
-    label: 'AMOUNT',
+    label: 'amount',
     dataKey: 'amount',
   },
   {
-    label: 'CURRENCY',
+    label: 'currency',
     dataKey: 'currency',
   },
   {
-    label: 'PERCENT',
+    label: 'percent',
     dataKey: 'percent',
   },
   {
-    label: 'CREATED',
+    label: 'created_at',
     dataKey: 'createdAt',
   },
   {

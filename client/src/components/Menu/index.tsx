@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import useToggle from '../../customHooks/useToggle';
 import { drawerMixin } from '../../utils/drawerMixin';
 import { menuItems } from './constants';
+import { useTranslation } from 'react-i18next';
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -32,6 +33,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const Menu: FC = () => {
+  const { t } = useTranslation();
   const [openMenu, toggleMenu] = useToggle(true);
 
   return (
@@ -52,12 +54,12 @@ const Menu: FC = () => {
         </IconButton>
       </Toolbar>
       <List component="nav">
-        {menuItems.map(({ text, Icon, link }, i) => (
+        {menuItems.map(({ i18key, Icon, link }, i) => (
           <ListItem button key={i} to={link} component={Link}>
             <ListItemIcon>
               <Icon />
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <ListItemText primary={t(i18key)} />
           </ListItem>
         ))}
       </List>

@@ -1,6 +1,7 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import { Add } from '@mui/icons-material';
 import { Box, Typography, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   open: boolean;
@@ -8,6 +9,8 @@ interface Props {
 }
 
 const AssetTitle: FC<Props> = ({ open, toggle }) => {
+  const { t } = useTranslation();
+
   return (
     <Box
       mb="2rem"
@@ -16,7 +19,7 @@ const AssetTitle: FC<Props> = ({ open, toggle }) => {
       alignItems="center"
     >
       <Typography variant="h6" component="h1">
-        Asset Balances
+        {t('asset_balances')}
       </Typography>
       <Button
         size="small"

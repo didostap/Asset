@@ -1,0 +1,31 @@
+{
+  "home": "Головна",
+  "echange": "Біржа",
+  "prices": "Ціни",
+  "wallets": "Гаманці",
+  "promotions": "Акції",
+  "activities": "Діяльність",
+  "notifications": "Сповіщення",
+  "settings": "Налаштування",
+
+  "asset_balances": "Баланс Активів",
+  "asset": "Актив",
+  "amount":"Сума",
+  "currency": "Валюта",
+  "percent": "Відсоток",
+  "created_at": "Створено",
+
+  "add_asset": "Добавити Актив",
+  "asset_name": "Назва активу",
+  "increase": "Зростання",
+  "interval": "Інтервал",
+  "add": "Добавити",
+  "none": "Жодного",
+  "daily": "Щоденно",
+  "weekly": "Щотижнево",
+  "monthly": "Щомісячно",
+  "yearly": "Щорічно",
+
+  "required_field": "Поле обов'язкове",
+  "min_one": "Принаймні 1"
+}
